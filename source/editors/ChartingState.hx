@@ -2690,7 +2690,7 @@ class ChartingState extends MusicBeatState
 		var data:String = Json.stringify(json, "\t");
 
 		if ((data != null) && (data.length > 0))
-		{.      
+		{    
 			#if android
 			SUtil.saveContent("events", ".json", data.trim());
 			#else
