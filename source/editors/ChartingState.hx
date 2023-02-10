@@ -50,6 +50,11 @@ import sys.io.File;
 import sys.FileSystem;
 import flash.media.Sound;
 #end
+#if android
+import android.flixel.FlxButton;
+#else
+import flixel.ui.FlxButton;
+#end
 
 using StringTools;
 
@@ -374,6 +379,11 @@ class ChartingState extends MusicBeatState
 		add(zoomTxt);
 		
 		updateGrid();
+		
+		#if android
+		addVirtualPad(LEFT_FULL, A_B_C_D_V_X_Y_Z);
+		#end
+			
 		super.create();
 	}
 
@@ -1521,12 +1531,12 @@ class ChartingState extends MusicBeatState
 
 		if (!blockInput)
 		{
-			if (FlxG.keys.justPressed.ESCAPE)
+			if (FlxG.keys.justPressed.ESCAPE #if android || FlxG.android.justReleased.BACK #end)
 			{
 				autosaveSong();
 				LoadingState.loadAndSwitchState(new editors.EditorPlayState(sectionStartTime()));
 			}
-			if (FlxG.keys.justPressed.ENTER)
+			if (FlxG.keys.justPressed.ENTER #if android || virtualPad.buttonA.justPressed #end)
 			{
 				autosaveSong();
 				FlxG.mouse.visible = false;
@@ -1551,7 +1561,7 @@ class ChartingState extends MusicBeatState
 			}
 			
 			
-			if (FlxG.keys.justPressed.BACKSPACE) {
+			if (FlxG.keys.justPressed.BACKSPACE #if android || virtualPad.buttonB.justPressed #end) {
 				//if(onMasterEditor) {
 					MusicBeatState.switchState(new editors.MasterEditorMenu());
 					FlxG.sound.playMusic(Paths.music('freakyMenu'));
@@ -1560,11 +1570,11 @@ class ChartingState extends MusicBeatState
 				return;
 			}
 
-			if(FlxG.keys.justPressed.Z && curZoom > 0) {
+			if(FlxG.keys.justPressed.Z #if android || virtualPad.buttonZ.justPressed #end && curZoom > 0) {
 				--curZoom;
 				updateZoom();
 			}
-			if(FlxG.keys.justPressed.X && curZoom < zoomList.length-1) {
+			if(FlxG.keys.justPressed.X #if android || virtualPad.buttonC.justPressed #end && curZoom < zoomList.length-1) {
 				curZoom++;
 				updateZoom();
 			}
@@ -1585,7 +1595,7 @@ class ChartingState extends MusicBeatState
 				}
 			}
 
-			if (FlxG.keys.justPressed.SPACE)
+			if (FlxG.keys.justPressed.SPACE #if android || virtualPad.buttonX.justPressed #end)
 			{
 				if (FlxG.sound.music.playing)
 				{
@@ -1604,7 +1614,7 @@ class ChartingState extends MusicBeatState
 				}
 			}
 
-			if (FlxG.keys.justPressed.R)
+			if (FlxG.keys.justPressed.R #if android || virtualPad.buttonV.justPressed #end)
 			{
 				if (FlxG.keys.pressed.SHIFT)
 					resetSection(true);
@@ -1626,7 +1636,7 @@ class ChartingState extends MusicBeatState
 			
 			
 			
-			if (FlxG.keys.pressed.W || FlxG.keys.pressed.S)
+			if (FlxG.keys.pressed.W || FlxG.keys.pressed.S #if android || virtualPad.buttonUp.pressed || virtualPad.buttonDown.pressed #end)
 			{
 				FlxG.sound.music.pause();
 
@@ -1651,7 +1661,7 @@ class ChartingState extends MusicBeatState
 			
 			var style = currentType;
 			
-			if (FlxG.keys.pressed.SHIFT){
+			if (FlxG.keys.pressed.SHIFT #if android || virtualPad.buttonY.pressed #end){
 				style = 3;
 			}
 			
@@ -1680,14 +1690,14 @@ class ChartingState extends MusicBeatState
 					datimess.push(sectionStartTime() + daTime * i);
 				}
 			
-			if (FlxG.keys.justPressed.LEFT)
+			if (FlxG.keys.justPressed.LEFT #if android || virtualPad.buttonLeft.justPressed #end)
 			{
 				--curQuant;
 				if (curQuant < 0) curQuant = 0;
 				
 				daquantspot *=  Std.int(32/quants[curQuant]);
 			}
-			if (FlxG.keys.justPressed.RIGHT)
+			if (FlxG.keys.justPressed.RIGHT #if android || virtualPad.buttonRight.justPressed #end)
 			{
 				curQuant ++;
 				if (curQuant > quants.length-1) curQuant = quants.length-1;
@@ -1695,7 +1705,7 @@ class ChartingState extends MusicBeatState
 			}
 			quant.animation.play('q', true, false, curQuant);
 			var feces:Float;
-			if (FlxG.keys.justPressed.UP || FlxG.keys.justPressed.DOWN  )
+			if (FlxG.keys.justPressed.UP || FlxG.keys.justPressed.DOWN #if android || virtualPad.buttonUp.justPressed || virtualPad.buttonDown.justPressed #end )
 			{
 				FlxG.sound.music.pause();
 
@@ -1769,12 +1779,12 @@ class ChartingState extends MusicBeatState
 			}
 			}
 			var shiftThing:Int = 1;
-			if (FlxG.keys.pressed.SHIFT)
+			if (FlxG.keys.pressed.SHIFT #if android || virtualPad.buttonY.pressed #end)
 				shiftThing = 4;
 
-			if (FlxG.keys.justPressed.RIGHT && !vortex|| FlxG.keys.justPressed.D)
+			if (FlxG.keys.justPressed.RIGHT && !vortex|| FlxG.keys.justPressed.D #if android || virtualPad.buttonRight.justPressed #end)
 				changeSection(curSection + shiftThing);
-			if (FlxG.keys.justPressed.LEFT && !vortex|| FlxG.keys.justPressed.A) {
+			if (FlxG.keys.justPressed.LEFT && !vortex|| FlxG.keys.justPressed.A #if android || virtualPad.buttonLeft.justPressed #end) {
 				if(curSection <= 0) {
 					changeSection(_song.notes.length-1);
 				} else {
